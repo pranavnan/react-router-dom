@@ -1,10 +1,47 @@
 import EventsList from "../components/EventsList";
-import { useLoaderData } from "react-router-dom";
+import { useLoaderData, json } from "react-router-dom";
+
+// react router gives us a special hook, which we can use to check the current route transitions state
 
 export default function EventsPage() {
-  const events = useLoaderData();
+  const data = useLoaderData();
+
+  if (data.isError) {
+    return <p>{data.message}</p>;
+  }
+  const events = data.events;
 
   return <EventsList events={events} />;
+}
+
+// loader function
+// Loader executes in the browser
+
+export async function loader() {
+  const response = await fetch("http://localhost:8080/events");
+
+  // if (!response.ok) {
+  // } else {
+  //   const resData = await response.json();
+  //   // return resData.events;
+  //   const res = new Response('any data', {status: 201 });
+  //   // This Response() is built into the browser
+  // }
+  if (!response.ok) {
+    // return { isError: true, message: "Could not fetch events." };
+    // throw { message: "Could not fetch events." };
+    // When an error throw in the loader Something special happens. React router will simply render the closest errorElement
+
+    // throw new Response(JSON.stringify({ message: "Could not fetch events!" }), {
+    //   status: 500,
+    // });
+
+    // throw only Response object because it does allowed us to include this extra status property, which helps with building generic error handling component
+
+    return json({ message: "Could not fetch events." }, { status: 500 });
+  }
+
+  return response;
 }
 
 // import EventsList from "../components/EventsList";

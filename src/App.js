@@ -2,17 +2,21 @@ import React from "react";
 import HomePage from "./pages/Home";
 
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import EventsPage from "./pages/Events";
-import EventDetailPage from "./pages/EventDetail";
+import EventsPage, { loader as eventsLoader } from "./pages/Events";
+import EventDetailPage, {
+  loader as eventDetailsLoader,
+} from "./pages/EventDetail";
 import NewEventPage from "./pages/NewEvent";
 import EditEventsPage from "./pages/EditEvents";
 import RootLayout from "./pages/Root";
 import EventsRoot from "./pages/EventsRoot";
+import ErrorPage from "./pages/Error";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <RootLayout />,
+    errorElement: <ErrorPage />,
     children: [
       { index: true, element: <HomePage /> },
       {
@@ -22,17 +26,9 @@ const router = createBrowserRouter([
           {
             index: true,
             element: <EventsPage />,
-            loader: async () => {
-              const response = await fetch("http://localhost:8080/events");
-
-              if (!response.ok) {
-              } else {
-                const resData = await response.json();
-                return resData.events;
-              }
-            },
+            loader: eventsLoader,
           },
-          { path: ":eventId", element: <EventDetailPage /> },
+          { path: ":eventId", element: <EventDetailPage />, loader: eventDetailsLoader },
           { path: "new", element: <NewEventPage /> },
           { path: ":eventId/edit", element: <EditEventsPage /> },
         ],
@@ -46,6 +42,55 @@ function App() {
 }
 
 export default App;
+
+// import React from "react";
+// import HomePage from "./pages/Home";
+
+// import { createBrowserRouter, RouterProvider } from "react-router-dom";
+// import EventsPage from "./pages/Events";
+// import EventDetailPage from "./pages/EventDetail";
+// import NewEventPage from "./pages/NewEvent";
+// import EditEventsPage from "./pages/EditEvents";
+// import RootLayout from "./pages/Root";
+// import EventsRoot from "./pages/EventsRoot";
+
+// const router = createBrowserRouter([
+//   {
+//     path: "/",
+//     element: <RootLayout />,
+//     children: [
+//       { index: true, element: <HomePage /> },
+//       {
+//         path: "events",
+//         element: <EventsRoot />,
+//         children: [
+//           {
+//             index: true,
+//             element: <EventsPage />,
+//             loader: async () => {
+//               const response = await fetch("http://localhost:8080/events");
+
+//               if (!response.ok) {
+//               } else {
+//                 const resData = await response.json();
+//                 return resData.events;
+//               }
+//             },
+//           },
+//           { path: ":eventId", element: <EventDetailPage /> },
+//           { path: "new", element: <NewEventPage /> },
+//           { path: ":eventId/edit", element: <EditEventsPage /> },
+//         ],
+//       },
+//     ],
+//   },
+// ]);
+
+// function App() {
+//   return <RouterProvider router={router} />;
+// }
+
+// export default App;
 
 // Challenge / Exercise
 
