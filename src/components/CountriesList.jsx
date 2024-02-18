@@ -1,10 +1,13 @@
 /* eslint-disable react/prop-types */
-import CountryItem from "./CountryItem";
-import styles from "./CountryList.module.css";
-import Message from "./Message";
-import Spinner from "./Spinner";
+import { useCities } from '../context/CitiesContext';
+import CountryItem from './CountryItem';
+import styles from './CountryList.module.css';
+import Message from './Message';
+import Spinner from './Spinner';
 
-const CountriesList = ({ isLoading, cities }) => {
+const CountriesList = () => {
+  const { cities, isLoading } = useCities();
+
   if (isLoading) return <Spinner />;
 
   const countries = cities.reduce((acc, curr) => {
